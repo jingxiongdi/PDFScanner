@@ -1,6 +1,7 @@
 package com.jxd.pdfscanner;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
@@ -27,6 +28,7 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.jxd.pdfscanner.preview.PreviewActivity;
 import com.jxd.pdfscanner.util.JXDLog;
 import com.jxd.pdfscanner.util.ToastUtil;
 
@@ -34,7 +36,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements TextureView.SurfaceTextureListener {
     private String[] permissionArr = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
@@ -48,8 +52,12 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
 
     private Button takePhotoBtn = null;
     private ImageReader imageReader = null;
-    private String currentFolderName = String.valueOf(System.currentTimeMillis());
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private String currentFolderName = sdf.format(new Date());
     private static final SparseIntArray ORIENTATION = new SparseIntArray();
+    private Button previewBtn = null;
+
+
 
     static {
         ORIENTATION.append(Surface.ROTATION_0, 90);
@@ -73,11 +81,18 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
         mThreadHandler = new HandlerThread("CAMERA2");
         mThreadHandler.start();
         mHandler = new Handler(mThreadHandler.getLooper());
+        imageReader = ImageReader.newInstance(960, 1280, ImageFormat.JPEG, 2 /* images buffered */);
+        imageReader.setOnImageAvailableListener(onImageAvailableListener, null);
     }
 
     private void setViews() {
         textureView = findViewById(R.id.texture);
         textureView.setSurfaceTextureListener(this);
+
+        previewBtn = findViewById(R.id.preview);
+        previewBtn.setOnClickListener(view -> {
+            startActivity(new Intent(MainActivity.this, PreviewActivity.class));
+        });
         takePhotoBtn = findViewById(R.id.take_photo_btn);
         takePhotoBtn.setOnClickListener(view -> {
             if(captureSession == null){
@@ -161,8 +176,7 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
                 return;
             }
             cameraManager.openCamera(CameraIdList[0], mCameraDeviceStateCallback, mHandler);
-            imageReader = ImageReader.newInstance(960, 1280, ImageFormat.JPEG, 2 /* images buffered */);
-            imageReader.setOnImageAvailableListener(onImageAvailableListener, null);
+
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
