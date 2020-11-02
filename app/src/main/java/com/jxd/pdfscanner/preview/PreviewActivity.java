@@ -46,7 +46,7 @@ public class PreviewActivity extends AppCompatActivity {
         Collections.sort(photoFolderList, new Comparator<File>() {
             @Override
             public int compare(File f1, File f2) {
-                return (int)(f1.lastModified() - f2.lastModified());
+                return (int)(f2.lastModified() - f1.lastModified());
             }
         });
 
