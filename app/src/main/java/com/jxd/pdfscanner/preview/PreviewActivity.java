@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jxd.pdfscanner.R;
@@ -53,7 +54,6 @@ public class PreviewActivity extends AppCompatActivity {
 
         setViews();
 
-        initData();
     }
 
     private void setViews() {
@@ -85,26 +85,38 @@ public class PreviewActivity extends AppCompatActivity {
         });
 
         recyclerView = findViewById(R.id.recycle_view);
+
+    }
+
+    private void createPDFFuction() {
+        JXDLog.d("createPDFFuction====");
+    }
+
+    private void initData() {
+        if(photoFolderList.size()<=0){
+            ToastUtil.getInstance().showToast("当前文件夹没有文件");
+            return;
+        }
         File folder = photoFolderList.get(0);
         List<PhotoBean> beanList = new LinkedList<>();
-        folder.listFiles((file, s) -> {
+        File[] phtotFiles = folder.listFiles();
+        for(File file:phtotFiles){
             PhotoBean photoBean = new PhotoBean();
             photoBean.setPhotoFile(file);
-            photoBean.setPhotoName(s);
+            photoBean.setPhotoName(file.getName());
             photoBean.setPhotoCheckStatus(false);
             beanList.add(photoBean);
-            return false;
-        });
+        }
+        LinearLayoutManager layoutManager= new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
         RecycleviewAdapter recycleviewAdapter = new RecycleviewAdapter(beanList,PreviewActivity.this);
         recyclerView.setAdapter(recycleviewAdapter);
         JXDLog.d("setAdapter====");
     }
 
-    private void createPDFFuction() {
-
-    }
-
-    private void initData() {
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initData();
     }
 }

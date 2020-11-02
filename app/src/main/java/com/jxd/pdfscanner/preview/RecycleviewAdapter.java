@@ -6,14 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.jxd.pdfscanner.PDFScannerApp;
 import com.jxd.pdfscanner.R;
 import com.jxd.pdfscanner.util.JXDLog;
 
@@ -24,19 +20,7 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecycleviewAdapter.
 
     private List<PhotoBean> mTxList;//用以将适配完的子项储存的链表，它的泛型是之前的实体类
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
-        //内部静态类，用以定义TxApter.View的泛型
-        ImageView txImage;
-        TextView txName;//这两个是在子项布局里面具体的控件
-        CheckBox checkBox;//这个是用于整个子项的控制的控件
 
-        public ViewHolder(View view) {
-            super(view);
-            checkBox = view.findViewById(R.id.checkbox);//这个是整个子项的控件
-            txImage = view.findViewById(R.id.image_item);
-            txName = view.findViewById(R.id.file_name);//通过R文件的id查找，找出子项的具体控件
-        }
-    }
 
     public RecycleviewAdapter(List<PhotoBean> txList,Context context) {
         //链表的赋值
@@ -78,5 +62,19 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecycleviewAdapter.
     public int getItemCount() {
         //用以返回RecyclerView的总共长度，这里直接使用了链表的长度（size）
         return mTxList.size();
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder {
+        //内部静态类，用以定义TxApter.View的泛型
+        ImageView txImage;
+        TextView txName;//这两个是在子项布局里面具体的控件
+        CheckBox checkBox;//这个是用于整个子项的控制的控件
+
+        public ViewHolder(View view) {
+            super(view);
+            checkBox = view.findViewById(R.id.checkbox);//这个是整个子项的控件
+            txImage = view.findViewById(R.id.image_item);
+            txName = view.findViewById(R.id.file_name);//通过R文件的id查找，找出子项的具体控件
+        }
     }
 }
