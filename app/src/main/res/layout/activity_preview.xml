@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,18 +22,18 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             />
-        <Button
-            android:id="@+id/create_pdf_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="生成PDF"
-            />
     </LinearLayout>
 
-
+    <Button
+        android:id="@+id/create_pdf_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="生成PDF"
+        />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycle_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        />
 
 </LinearLayout> 

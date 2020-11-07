@@ -53,8 +53,8 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecycleviewAdapter.
         //A:前面方法ViewHolder的对象；
         //B:子项的id
         PhotoBean photoBean = mTxList.get(position);//创建前面实体类的对象
-        Glide.with(adapterContext).load(photoBean.getPhotoFile()).into(holder.txImage);//thumbnail(0.2f)
-        holder.txName.setText(photoBean.getPhotoName());//将具体值赋与子项对应的控件
+        Glide.with(adapterContext).load(photoBean.getPhotoFile()).thumbnail(0.05f).into(holder.txImage);//
+       // holder.txName.setText(photoBean.getPhotoName());//将具体值赋与子项对应的控件
         JXDLog.d("onBindViewHolder==="+photoBean.getPhotoName());
     }
 
@@ -67,14 +67,14 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecycleviewAdapter.
     class ViewHolder extends RecyclerView.ViewHolder {
         //内部静态类，用以定义TxApter.View的泛型
         ImageView txImage;
-        TextView txName;//这两个是在子项布局里面具体的控件
+      //  TextView txName;//这两个是在子项布局里面具体的控件
         CheckBox checkBox;//这个是用于整个子项的控制的控件
 
         public ViewHolder(View view) {
             super(view);
             checkBox = view.findViewById(R.id.checkbox);//这个是整个子项的控件
             txImage = view.findViewById(R.id.image_item);
-            txName = view.findViewById(R.id.file_name);//通过R文件的id查找，找出子项的具体控件
+          //  txName = view.findViewById(R.id.file_name);//通过R文件的id查找，找出子项的具体控件
         }
     }
 }

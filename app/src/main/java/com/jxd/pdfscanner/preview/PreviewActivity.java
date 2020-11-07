@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,7 +18,6 @@ import com.jxd.pdfscanner.util.JXDLog;
 import com.jxd.pdfscanner.util.ToastUtil;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -107,8 +107,8 @@ public class PreviewActivity extends AppCompatActivity {
             photoBean.setPhotoCheckStatus(false);
             beanList.add(photoBean);
         }
-        LinearLayoutManager layoutManager= new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
+        recyclerView.setLayoutManager(gridLayoutManager);
         RecycleviewAdapter recycleviewAdapter = new RecycleviewAdapter(beanList,PreviewActivity.this);
         recyclerView.setAdapter(recycleviewAdapter);
         JXDLog.d("setAdapter====");
