@@ -10,7 +10,6 @@ import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jxd.pdfscanner.R;
@@ -29,6 +28,10 @@ public class PreviewActivity extends AppCompatActivity {
     private Spinner spinner = null;
     private Button createPDFBtn = null;
     private RecyclerView recyclerView = null;
+    private Button selectAllBtn = null;
+    private Button selectReverseBtn = null;
+    private RecycleviewAdapter recycleviewAdapter = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,12 +47,7 @@ public class PreviewActivity extends AppCompatActivity {
 
         File[] photoFolderArr = folder.listFiles();
         photoFolderList = Arrays.asList(photoFolderArr);
-        Collections.sort(photoFolderList, new Comparator<File>() {
-            @Override
-            public int compare(File f1, File f2) {
-                return (int)(f2.lastModified() - f1.lastModified());
-            }
-        });
+        Collections.sort(photoFolderList, (f1, f2) -> (int)(f2.lastModified() - f1.lastModified()));
 
 
         setViews();
@@ -57,6 +55,12 @@ public class PreviewActivity extends AppCompatActivity {
     }
 
     private void setViews() {
+        selectAllBtn = findViewById(R.id.select_all_btn);
+        selectAllBtn.setOnClickListener(v -> selectAll());
+
+        selectReverseBtn = findViewById(R.id.select_reverse_btn);
+        selectReverseBtn.setOnClickListener(v -> selectReverse());
+
         spinner = findViewById(R.id.spinner);
         LinkedList<String> linkedList = new LinkedList<>();
         for (File file:photoFolderList){
@@ -86,6 +90,16 @@ public class PreviewActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recycle_view);
 
+
+
+    }
+
+    private void selectReverse() {
+        recycleviewAdapter.selectReverse();
+    }
+
+    private void selectAll() {
+        recycleviewAdapter.selectAll();
     }
 
     private void createPDFFuction() {
@@ -109,7 +123,7 @@ public class PreviewActivity extends AppCompatActivity {
         }
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
         recyclerView.setLayoutManager(gridLayoutManager);
-        RecycleviewAdapter recycleviewAdapter = new RecycleviewAdapter(beanList,PreviewActivity.this);
+        recycleviewAdapter = new RecycleviewAdapter(beanList,PreviewActivity.this);
         recyclerView.setAdapter(recycleviewAdapter);
         JXDLog.d("setAdapter====");
     }

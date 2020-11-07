@@ -4,7 +4,7 @@ import java.io.File;
 
 public class PhotoBean {
     private String photoName;//照片名称
-    private boolean photoCheckStatus;//照片选中状态
+    private boolean photoCheckStatus = false;//照片选中状态
     private File photoFile;//照片对象
 
     public String getPhotoName() {

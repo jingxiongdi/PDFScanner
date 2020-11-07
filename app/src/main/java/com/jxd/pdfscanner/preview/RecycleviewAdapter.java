@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,9 +38,8 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecycleviewAdapter.
         //将子项的布局通过LayoutInflater引入
         final ViewHolder holder = new ViewHolder(view);
         //这里是子项的点击事件，RecyclerView的特点就是可以对子项里面单个控件注册监听，这也是为什么RecyclerView要摒弃ListView的setOnItemClickListener方法的原因
-        holder.checkBox.setOnClickListener(v -> {
-//            Tx tx = mTxList.get(holder.getAdapterPosition());
-//            mTxList.remove(tx);//所谓的删除就是将子项从链表中remove
+        holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            mTxList.get(holder.getAdapterPosition()).setPhotoCheckStatus(isChecked);
         });
         JXDLog.d("onCreateViewHolder===");
         return holder;//返回一个holder对象，给下个方法使用
@@ -55,7 +55,11 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecycleviewAdapter.
         PhotoBean photoBean = mTxList.get(position);//创建前面实体类的对象
         Glide.with(adapterContext).load(photoBean.getPhotoFile()).thumbnail(0.05f).into(holder.txImage);//
        // holder.txName.setText(photoBean.getPhotoName());//将具体值赋与子项对应的控件
-        JXDLog.d("onBindViewHolder==="+photoBean.getPhotoName());
+        if(photoBean.isPhotoCheckStatus()){
+            holder.checkBox.setChecked(true);
+        }else {
+            holder.checkBox.setChecked(false);
+        }
     }
 
     @Override
@@ -77,4 +81,25 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecycleviewAdapter.
           //  txName = view.findViewById(R.id.file_name);//通过R文件的id查找，找出子项的具体控件
         }
     }
+
+    public void selectAll(){
+        for (int i=0;i<mTxList.size();i++){
+            if(!mTxList.get(i).isPhotoCheckStatus()){
+                mTxList.get(i).setPhotoCheckStatus(true);
+            }
+        }
+        notifyDataSetChanged();
+    }
+
+    public void selectReverse(){
+        for (int i=0;i<mTxList.size();i++){
+            if(!mTxList.get(i).isPhotoCheckStatus()){
+                mTxList.get(i).setPhotoCheckStatus(true);
+            }else {
+                mTxList.get(i).setPhotoCheckStatus(false);
+            }
+        }
+        notifyDataSetChanged();
+    }
+
 }
