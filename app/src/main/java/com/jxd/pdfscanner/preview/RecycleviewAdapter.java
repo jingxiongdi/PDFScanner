@@ -1,6 +1,7 @@
 package com.jxd.pdfscanner.preview;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.jxd.pdfscanner.R;
+import com.jxd.pdfscanner.util.Constants;
 import com.jxd.pdfscanner.util.JXDLog;
 
 import java.util.List;
@@ -41,7 +43,11 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecycleviewAdapter.
         holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mTxList.get(holder.getAdapterPosition()).setPhotoCheckStatus(isChecked);
         });
-        JXDLog.d("onCreateViewHolder===");
+        holder.txImage.setOnClickListener(v -> {
+            Intent intent = new Intent(adapterContext,PhotoDetailActivity.class);
+            intent.putExtra(Constants.PHOTO_DETAIL_PATH,mTxList.get(holder.getAdapterPosition()).getPhotoFile());
+            adapterContext.startActivity(intent);
+        });
         return holder;//返回一个holder对象，给下个方法使用
 
     }

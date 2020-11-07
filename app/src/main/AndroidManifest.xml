@@ -17,7 +17,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
-        <activity android:name=".preview.PreviewActivity"></activity>
+        <activity android:name=".preview.PhotoDetailActivity"></activity>
+        <activity android:name=".preview.PreviewActivity" />
         <activity
             android:name=".MainActivity"
             android:hardwareAccelerated="true">
