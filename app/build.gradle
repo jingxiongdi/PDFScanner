@@ -39,4 +39,7 @@ dependencies {
 
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+
+    //图片裁剪控件
+    implementation 'com.github.open-android:uCrop:v1.0.0'
 }
