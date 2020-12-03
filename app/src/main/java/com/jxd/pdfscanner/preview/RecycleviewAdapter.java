@@ -16,6 +16,7 @@ import com.jxd.pdfscanner.R;
 import com.jxd.pdfscanner.util.Constants;
 import com.jxd.pdfscanner.util.JXDLog;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class RecycleviewAdapter extends RecyclerView.Adapter<RecycleviewAdapter.ViewHolder>{
@@ -106,6 +107,16 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecycleviewAdapter.
             }
         }
         notifyDataSetChanged();
+    }
+
+    public List<PhotoBean> getSelectedPhotoList(){
+        List<PhotoBean> beanList = new LinkedList<>();
+        for (int i=0;i<mTxList.size();i++){
+            if(mTxList.get(i).isPhotoCheckStatus()){
+                beanList.add(mTxList.get(i));
+            }
+        }
+        return beanList;
     }
 
 }

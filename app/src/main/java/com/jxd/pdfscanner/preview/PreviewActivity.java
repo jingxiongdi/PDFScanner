@@ -103,7 +103,9 @@ public class PreviewActivity extends AppCompatActivity {
     }
 
     private void createPDFFuction() {
-        JXDLog.d("createPDFFuction====");
+        List<PhotoBean> photoBeanList = recycleviewAdapter.getSelectedPhotoList();
+        JXDLog.d("createPDFFuction===="+photoBeanList.size());
+
     }
 
     private void initData() {
