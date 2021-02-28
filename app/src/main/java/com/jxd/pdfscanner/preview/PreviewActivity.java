@@ -1,11 +1,15 @@
 package com.jxd.pdfscanner.preview;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.pdf.PdfDocument;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,9 +21,11 @@ import com.jxd.pdfscanner.util.JXDLog;
 import com.jxd.pdfscanner.util.ToastUtil;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,6 +37,7 @@ public class PreviewActivity extends AppCompatActivity {
     private Button selectAllBtn = null;
     private Button selectReverseBtn = null;
     private RecycleviewAdapter recycleviewAdapter = null;
+    private ImageView pdfImg = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +54,7 @@ public class PreviewActivity extends AppCompatActivity {
 
         File[] photoFolderArr = folder.listFiles();
         photoFolderList = Arrays.asList(photoFolderArr);
-        Collections.sort(photoFolderList, (f1, f2) -> (int)(f2.lastModified() - f1.lastModified()));
+        Collections.sort(photoFolderList, (f1, f2) -> (int)(f1.lastModified() - f2.lastModified()));
 
 
         setViews();
@@ -55,6 +62,9 @@ public class PreviewActivity extends AppCompatActivity {
     }
 
     private void setViews() {
+        pdfImg = findViewById(R.id.preview_pic_pdf);
+        pdfImg.setVisibility(View.GONE);
+
         selectAllBtn = findViewById(R.id.select_all_btn);
         selectAllBtn.setOnClickListener(v -> selectAll());
 
@@ -75,6 +85,17 @@ public class PreviewActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 JXDLog.d("spinner item "+i);
+                File folder = photoFolderList.get(i);
+                List<PhotoBean> beanList = new LinkedList<>();
+                File[] phtotFiles = folder.listFiles();
+                for(File file:phtotFiles){
+                    PhotoBean photoBean = new PhotoBean();
+                    photoBean.setPhotoFile(file);
+                    photoBean.setPhotoName(file.getName());
+                    photoBean.setPhotoCheckStatus(false);
+                    beanList.add(photoBean);
+                }
+                recycleviewAdapter.refreshData(beanList);
             }
 
             @Override
@@ -85,7 +106,14 @@ public class PreviewActivity extends AppCompatActivity {
 
         createPDFBtn = findViewById(R.id.create_pdf_btn);
         createPDFBtn.setOnClickListener(view -> {
-            createPDFFuction();
+            pdfImg.setVisibility(View.VISIBLE);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    createPDFFuction();
+                }
+            }).start();
+
         });
 
         recyclerView = findViewById(R.id.recycle_view);
@@ -105,7 +133,43 @@ public class PreviewActivity extends AppCompatActivity {
     private void createPDFFuction() {
         List<PhotoBean> photoBeanList = recycleviewAdapter.getSelectedPhotoList();
         JXDLog.d("createPDFFuction===="+photoBeanList.size());
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(768, 1280, photoBeanList.size()).create();
+        PdfDocument document = new PdfDocument();
+        for(PhotoBean bean:photoBeanList){
+            Bitmap bitmap = BitmapFactory.decodeFile(bean.getPhotoFile().getAbsolutePath());
+            runOnUiThread(() -> pdfImg.setImageBitmap(bitmap));
 
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            runOnUiThread(() -> {
+                PdfDocument.Page page = document.startPage(pageInfo);
+                View content = pdfImg.getRootView();
+                content.draw(page.getCanvas());
+                document.finishPage(page);
+            });
+
+        }
+
+        // add more pages
+        File file = new File(getExternalCacheDir()+File.separator+"a.pdf");
+        FileOutputStream outputStream = null;
+        try {
+            outputStream = new FileOutputStream(file);
+            // write the document content
+            document.writeTo(outputStream);
+            // clse the document
+            document.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        JXDLog.d("createPDFFuction====succ");
+
+        runOnUiThread(() -> pdfImg.setVisibility(View.GONE));
     }
 
     private void initData() {

@@ -32,6 +32,11 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecycleviewAdapter.
         adapterContext = context;
     }
 
+    public void refreshData(List<PhotoBean> list){
+        mTxList = list;
+        notifyDataSetChanged();
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //ViewHode方法，我的理解就是对某个具体子项的操作，包括对具体控件的设置，包括且不限于的点击动作两个参数
